@@ -19,8 +19,12 @@ namespace libraryMS
             data = new T[capacity];
         }
 
-        public void Add(T value)
+        public void Add(T? value)
         {
+            if(value == null)
+            {
+                return;
+            }
             if (count == capacity)
             {
                 capacity *= 2;

@@ -9,24 +9,15 @@ class Program
 
         LibraryManager.InitializeMembers();              //initialize some members at the start,to the LibraryManager.MemberStroe dynamic array
 
+        LibraryManager.InitializeWaiters();
+
         DynamicArray<OutgoneBook> OutgoneBooks = new DynamicArray<OutgoneBook>();   //dyanamic array to store outgonebooks details
 
 
 
-       
-        Console.WriteLine("Library Management System");
+      
 
-        Console.WriteLine(
-              "Add new book               -->  add  -book\n" +
-              "Add new member             -->  add  -mem\n" +
-              "Read member                -->  read -mem\n" +
-              "Borrow book                -->  bor\n" +
-              "Outgone books              -->  outed\n" +
-              "Sort Outgone books by date -->  outed -sor\n"+
-              "Read all members           -->  mem -all\n"  +     //update deneth
-              "Sort members by name       -->  mem -sort\n"+
-              "Exit the programme         -->  exit"
-        );
+        Service.GetMainMenu();
 
         
 
@@ -41,7 +32,7 @@ class Program
             switch (Operation_selected)
             {
                 case "add -book":
-                    Book NewBook = Service.CreateBook();         //adding books further from the console
+                    Book? NewBook = Service.CreateBook();         //adding books further from the console
                     LibraryManager.BooksStore.Add(NewBook);
                     break;
                 case "add -mem":
@@ -57,19 +48,35 @@ class Program
                 case "bor":
                     Service.BorrowBook(LibraryManager.BooksStore,OutgoneBooks);
                     break;
-                case "outed":
+                case "ret":
+                    Console.Write("Member ID: ");
+                    Service.ReturnBook(OutgoneBooks,Console.ReadLine());
+                    break;
+                case "out":
                     Service.ReadOutgoneBooks(OutgoneBooks);
                     break;
-                case "outed -sort":
+                case "out-sort":
                     Service.SortOutgoneBooksByDate(OutgoneBooks);
                     break;
-                case "mem -sort":
+                case "mem-sort-name":
                     Service.SortMembersByName(LibraryManager.MemberStore);  // Sort the member list
                     break;
-                case "mem -all":
+                case "mem-sort-regday":
+                    Service.SortMembersbyRegday(LibraryManager.MemberStore);
+                    break;
+                case "mem-all":
                     Service.ReadAllMembers(LibraryManager.MemberStore);
                     break;
+                case "wlist":
+                    Service.GetWaitersList();
+                    break;
+                case "wl-clear-top":
+                    Service.ClearTopWlist();
+                    break;
                 case "exit":
+                    break;
+                case "help":
+                    Service.GetMainMenu();
                     break;
                 default:
                     Console.WriteLine("you have not give proper input");

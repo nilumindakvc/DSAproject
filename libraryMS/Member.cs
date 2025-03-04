@@ -20,12 +20,12 @@ namespace libraryMS
             RegisteredDay = DateTime.Today;
         }
 
-        public Member(string userId, string userName, string email)
+        public Member(string userId, string userName, string email,DateTime regday=default(DateTime))
         {
             UserId = userId;
             UserName = userName;
             Email = email;
-            RegisteredDay= DateTime.Today;
+            RegisteredDay = regday == default(DateTime) ? DateTime.Now : regday;
         }   
     }
 

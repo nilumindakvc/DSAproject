@@ -3,48 +3,95 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace libraryMS
 {
     public  static class Service
     {
-        public static Book CreateBook()                  // a function, get inputs through the console,return those with book object
+        public static Book? CreateBook()                  // a function, get inputs through the console,return those with book object
         {
-            Book book = new Book();
+            
 
-            Console.Write("Book Id: ");
-            book.BookId = Convert.ToInt32( Console.ReadLine());
+            Console.WriteLine("availabe insertable categories \n\nm  -  math\np  -  phy\nc  -  chem\ne  -  econ\ncs -  comSc\nb  -  bio\nbs -  bussi\n");
+            Console.Write("add ?(y/n): ");
+            if (Console.ReadLine() == "n")
+            {
+                return null;
+            }
+            else
+            {
+                Console.WriteLine();
+                Book book = new Book();
 
-            Console.Write("Title: ");
-            book.Title = Console.ReadLine();
+                Console.Write("{0,-25} :","Category");
+               
+                switch (Console.ReadLine())
+                {
+                    case "m":
+                        book.Category = "Mathematics";
+                        break;
+                    case "p":
+                        book.Category = "Physics";
+                        break;
+                    case "c":
+                        book.Category = "Chemistry";
+                        break;
+                    case "e":
+                        book.Category = "Economics";
+                        break;
+                    case "cs":
+                        book.Category = "Computer Science";
+                        break;
+                    case "b":
+                        book.Category = "Biology";
+                        break;
+                    case "bs":
+                        book.Category = "Business";
+                        break;
+                    default:
+                        Console.WriteLine("you have not give proper input");
+                        break;
+                }
 
-            Console.Write("ISBN: ");
-            book.ISBN = Console.ReadLine();
 
-            Console.Write("Author: ");
-            book.Author = Console.ReadLine();
+                Console.Write("{0,-25} :","Book Id (XXX-integers)");
+                book.BookId = Convert.ToInt32(Console.ReadLine());
 
-            Console.Write("Category: ");
-            book.Category = Console.ReadLine();
+                Console.Write("{0,-25} :","Title");
+                book.Title = Console.ReadLine();
 
-            Console.Write("NumofCopies: ");
-            book.Numof_Copies=Convert.ToInt32(Console.ReadLine());
+                Console.Write("{0,-25} :","ISBN (XXXX-integers)");
+                book.ISBN = Console.ReadLine();
 
-            book.Numof_Borrows = 0;
+                Console.Write("{0,-25} :","Author");
+                book.Author = Console.ReadLine();
 
-            return book;
+
+
+                Console.Write("{0,-25} :","NumofCopies");
+                book.Numof_Copies = Convert.ToInt32(Console.ReadLine());
+
+                book.Numof_Borrows = 0;
+
+                return book;
+            }
+
+            
         }
 
         public static Member CreateMember()        //take input from console for new member,return those with member obj
         {
             Member member = new Member();
 
-            Console.Write("UserId: ");
+            Console.Write("{0,-25} :", "User Id (MEXXXX-integers)");
             member.UserId = Console.ReadLine();
 
-            Console.Write("User Name: ");
+            Console.Write("{0,-25} :", "UserName");
             member.UserName = Console.ReadLine();
 
+            Console.Write("{0,-25} :", "Email");
+            member.Email = Console.ReadLine();
 
             return member;
         }
@@ -88,13 +135,13 @@ namespace libraryMS
         {
             Console.WriteLine(
                 "Available Categories" +
-                "\nMathematics         -->M"+
-                "\nPhysics             -->P"+
-                "\nChemistry           -->C"+
-                "\nEconomics           -->E"+
-                "\nComputer Science    -->Cs"+
-                "\nBiology             -->B"+
-                "\nBusiness            -->Bs"
+                "\nMathematics         m"+
+                "\nPhysics             p"+
+                "\nChemistry           c"+
+                "\nEconomics           e"+
+                "\nComputer Science    cs"+
+                "\nBiology             b"+
+                "\nBusiness            bs"
             );
 
             bool MemberIdEntered = false;
@@ -112,25 +159,25 @@ namespace libraryMS
 
                 switch (user_input)
                 {
-                    case "M":
+                    case "m":
                         category = "Mathematics";
                         break;
-                    case "P":
+                    case "p":
                         category = "Physics";
                         break;
-                    case "C":
+                    case "c":
                         category = "Chemistry";
                         break;
-                    case "E":
+                    case "e":
                         category = "Economics";
                         break;
-                    case "Cs":
+                    case "cs":
                         category = "Computer Science";
                         break;
-                    case "B":
+                    case "b":
                         category = "Biology";
                         break;
-                    case "Bs":
+                    case "bs":
                         category = "Business";
                         break;
                     default:
@@ -143,13 +190,14 @@ namespace libraryMS
 
                 DynamicArray<Book> BookBucket = new DynamicArray<Book>(); //this dynamic array is for seperating some books from bookstore
 
-
+                Console.WriteLine("{0,-30}  {1,-10}", "Title", "ID");
+                Console.WriteLine();
                 for (int i = 0; i < bookStore.count; i++)
                 {
                     Book book = bookStore.GetObj(i);
                     if (book.Category == category)                  //linear serch going here
                     {
-                        Console.WriteLine(book.Title + "(id:" + book.BookId + ")");
+                        Console.WriteLine("{0,-30} | {1,-10}",book.Title,book.BookId);
                         BookBucket.Add(book);
                     }
                 }
@@ -172,19 +220,33 @@ namespace libraryMS
                             if (book.Numof_Copies == 0)
                             {
                                 Console.WriteLine("\nNo copies are available");
+                                if(borrower_id==" ")
+                                {
+                                    Console.Write("Enter ID (MExxxx): ");
+                                    borrower_id=Console.ReadLine();
+                                }
                                 Console.WriteLine("you will be added to waiting list");
+                                BookWaiter waiter = new BookWaiter(borrower_id, book.Title, DateTime.Now);
+                                LibraryManager.WaiterList.EnQueue(waiter);
+
+                                Console.Write("for more books enter 1 or exit by 0: ");
+                                FurtherBooks = Convert.ToInt32(Console.ReadLine());
                             }
                             else
                             {
                                 if (MemberIdEntered == false)
                                 {
-                                    Console.Write("enter your MemberId: ");
+                                    Console.Write("enter your MemberId (MEXXXX): ");
                                     borrower_id = Console.ReadLine();
                                     MemberIdEntered = true;
                                 }
 
                                 OutgoneBook outedBook = CreateOutgoneBook(book.Title, book.BookId, borrower_id);
                                 outgoneBooks.Add(outedBook);
+
+                                //if there is a same request in the waiter list it will remove from below
+                                RemoveMiddleElemetFromQueue(LibraryManager.WaiterList, borrower_id, book.Title);
+
 
                                 Console.WriteLine("\nBook name :" + book.Title + " is borrowed ");
                                 book.Numof_Copies -= 1;
@@ -202,6 +264,43 @@ namespace libraryMS
             } while (FurtherBooks != 0 && bookid_or_exit != 0);
         }
         
+        public static void ReturnBook(DynamicArray<OutgoneBook> outedbooks,string memberId)
+        {
+            int size=outedbooks.count;
+            bool taken=false;   
+
+            
+
+            for(int i = 0; i < size; i++)
+            {
+                if (memberId == outedbooks.GetObj(i).MemberId)
+                {
+                    taken = true;
+                    Console.Write("{0,-30} {1,-20} :", outedbooks.GetObj(i).Title,"submitted(y/n)");
+                    if (Console.ReadLine() == "y")
+                    {
+                        for (int k = 0; k < LibraryManager.BooksStore.count; k++)
+                        {
+                            if (LibraryManager.BooksStore.GetObj(k).Title == outedbooks.GetObj(i).Title)
+                            {
+                                LibraryManager.BooksStore.GetObj(k).Numof_Copies++;
+                            }
+                        }
+                        outedbooks.Remove(i);
+                      
+                        i--;
+                        size--;
+                    }
+                }
+
+            }
+            if (taken == false)
+            {
+                Console.WriteLine("not borrowed any book");
+            }
+
+
+        }
 
         public static void ReadOutgoneBooks(DynamicArray<OutgoneBook> outsideBooks)
         {
@@ -211,15 +310,13 @@ namespace libraryMS
             }
             else
             {
+                Console.WriteLine("{0, -10}  {1 ,-30}  {2,-10}  {3,-35}","BookID","Title","MemberID","OutgoneDate");
+                Console.WriteLine();
+
                 for(int i = 0;i < outsideBooks.count; i++)
                 {
                     OutgoneBook book = outsideBooks.GetObj(i);
-                    Console.WriteLine("book id: " + book.BookId + "\t" +
-                                                  book.Title + "\tborrowed by member id: " +
-                                                  book.MemberId + "\tdate: " +
-                                                  book.OutGoneDate.ToString()
-                                                  
-                    );
+                    Console.WriteLine("{0, -10} | {1 ,-30} | {2,-10} | {3,-35}",book.BookId,book.Title,book.MemberId,book.OutGoneDate);
                 }
             }
         }
@@ -357,11 +454,125 @@ namespace libraryMS
         public static void ReadAllMembers(DynamicArray<Member> MemberStore)
         {
             Console.WriteLine("\nMember List:\n");
-            for (int i = 0; i < LibraryManager.MemberStore.count; i++)
+
+            Console.WriteLine("{0,-10}  {1,-20}  {2,-25}", "ID", "Username", "RegisteredOn");
+            Console.WriteLine();
+
+           
+            for (int i = 0; i < MemberStore.count; i++)
             {
                 Member member = LibraryManager.MemberStore.GetObj(i);  // Fetch the sorted member
-                Console.WriteLine(member.UserId+"\t"+member.UserName);  // Display sorted member info
+                Console.WriteLine("{0,-10} | {1,-20} | {2,-25}", member.UserId, member.UserName, member.RegisteredDay);
             }
         }
+
+        public static void GetWaitersList()
+        {
+            LibraryManager.WaiterList.Display();
+        }
+
+        public static void ClearTopWlist()
+        {
+            LibraryManager.WaiterList.DeQueue();
+        }
+
+        public static void SortMembersbyRegday(DynamicArray<Member> MemberStore)  //using selection sort 
+        {
+            int size = MemberStore.count;
+
+            for (int i = 0; i < size - 1; i++)
+            {
+                int min = i;
+
+                for (int j = i + 1; j < size; j++)
+                {
+                    if (MemberStore.GetObj(j).RegisteredDay > MemberStore.GetObj(min).RegisteredDay)
+                    {
+                        min = j;
+                    }
+                }
+                if (min != i)
+                {
+                    Member temp=new Member();
+
+                    temp.UserId = MemberStore.GetObj(i).UserId;
+                    temp.UserName = MemberStore.GetObj(i).UserName;
+                    temp.Email = MemberStore.GetObj(i).Email;
+                    temp.RegisteredDay = MemberStore.GetObj(i).RegisteredDay;
+
+                    MemberStore.GetObj(i).UserId = MemberStore.GetObj(min).UserId;
+                    MemberStore.GetObj(i).UserName = MemberStore.GetObj(min).UserName;
+                    MemberStore.GetObj(i). Email= MemberStore.GetObj(min).Email;
+                    MemberStore.GetObj(i).RegisteredDay = MemberStore.GetObj(min).RegisteredDay;
+
+                    MemberStore.GetObj(min).UserId = temp.UserId;
+                    MemberStore.GetObj(min).UserName = temp.UserName;
+                    MemberStore.GetObj(min).Email = temp.Email;
+                    MemberStore.GetObj(min).RegisteredDay = temp.RegisteredDay;
+
+                    
+                }
+              
+            }
+            Console.WriteLine("sorted");
+        }
+
+        private static void RemoveMiddleElemetFromQueue(CircularQueue waiterQueue,string waiterID,string booktitle)
+        {
+            DynamicArray<BookWaiter> TemporyArray=new DynamicArray<BookWaiter>();
+
+            while (waiterQueue.Front != -1)
+            {
+                TemporyArray.Add(waiterQueue.DeQueueObjReturn());
+            }
+            int arrayCount=TemporyArray.count;
+            for(int i = 0; i < arrayCount; i++)
+            {
+                if(TemporyArray.GetObj(i).WaiterId==waiterID && TemporyArray.GetObj(i).BookWaitFor == booktitle)
+                {
+                    TemporyArray.Remove(i);
+                    break;
+                }
+            }
+            int arrayNewCount=TemporyArray.count;
+            for(int j=0; j < arrayNewCount; j++)
+            {
+                waiterQueue.EnQueue(TemporyArray.GetObj(j));
+            }
+            
+               
+
+        }
+
+        public static void GetMainMenu()
+        {
+            Console.WriteLine("Library Management System");
+            Console.WriteLine();
+
+            Console.WriteLine(
+            
+              "Borrow book                ->  bor\n" +
+              "Return book                ->  ret\n" +
+              "Outgone books              ->  out\n" +
+              "Sort Outgone books by date ->  out-sort\n" +
+              "Read all members           ->  mem-all\n" +               //update deneth
+              "Sort members by name       ->  mem-sort-name\n" +
+              "Sort members by regDay     ->  mem-sort-regday\n" +
+              "Get waiterList             ->  wlist\n" +
+              "Clear top of Wlist         ->  wl-clear-top\n" +
+              "Add new book               ->  add-book\n" +
+              "Add new member             ->  add-mem\n" +
+              "Read member                ->  read-mem\n" +
+              "Get main menu              ->  help\n" +
+              "Exit the programme         ->  exit"
+            );
+
+        }
+
+        //public static void SortMembersbyRegisterdDay()
+        //{
+
+        //}
+
     }
 }

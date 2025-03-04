@@ -8,8 +8,10 @@ namespace libraryMS
 {
     public static class LibraryManager
     {
-       public static  DynamicArray<Book> BooksStore = new DynamicArray<Book>();
-       public static  DynamicArray<Member> MemberStore = new DynamicArray<Member>();
+        public static  DynamicArray<Book> BooksStore = new DynamicArray<Book>();
+        public static  DynamicArray<Member> MemberStore = new DynamicArray<Member>();
+        public static  CircularQueue WaiterList = new CircularQueue(50);
+      
 
         public static void InitializeBooks()
         {
@@ -102,115 +104,118 @@ namespace libraryMS
 
         public static void InitializeMembers()
         {
-            MemberStore.Add(new Member("ME101", "Nimal", "nimal@gmail.com"));
-            MemberStore.Add(new Member("ME102", "Sunil", "sunil@gmail.com"));
-            MemberStore.Add(new Member("ME103", "Amara", "amara@gmail.com"));
-            MemberStore.Add(new Member("ME104", "Kamal", "kamal@gmail.com"));
-            MemberStore.Add(new Member("ME105", "Saman", "saman@gmail.com"));
-            MemberStore.Add(new Member("ME106", "Nimali", "nimali@gmail.com"));
-            MemberStore.Add(new Member("ME107", "Ruwan", "ruwan@gmail.com"));
-            MemberStore.Add(new Member("ME108", "Chandana", "chandana@gmail.com"));
-            MemberStore.Add(new Member("ME109", "Indika", "indika@gmail.com"));
-            MemberStore.Add(new Member("ME110", "Sanjeewa", "sanjeewa@gmail.com"));
+            Random rand = new Random();
 
-            MemberStore.Add(new Member("ME111", "Lalith", "lalith@gmail.com"));
-            MemberStore.Add(new Member("ME112", "Dinesh", "dinesh@gmail.com"));
-            MemberStore.Add(new Member("ME113", "Nuwan", "nuwan@gmail.com"));
-            MemberStore.Add(new Member("ME114", "Tharindu", "tharindu@gmail.com"));
-            MemberStore.Add(new Member("ME115", "Harsha", "harsha@gmail.com"));
-            MemberStore.Add(new Member("ME116", "Gayan", "gayan@gmail.com"));
-            MemberStore.Add(new Member("ME117", "Anura", "anura@gmail.com"));
-            MemberStore.Add(new Member("ME118", "Sarath", "sarath@gmail.com"));
-            MemberStore.Add(new Member("ME119", "Ranjith", "ranjith@gmail.com"));
-            MemberStore.Add(new Member("ME120", "Kushan", "kushan@gmail.com"));
+            DateTime RandomDate()
+            {
+                DateTime start = new DateTime(2020, 1, 1); 
+                int range = (DateTime.Today - start).Days;
+                return start.AddDays(rand.Next(range)).AddHours(rand.Next(0, 24)).AddMinutes(rand.Next(0, 60));
+            }
 
-            MemberStore.Add(new Member("ME121", "Prasanna", "prasanna@gmail.com"));
-            MemberStore.Add(new Member("ME122", "Mahesh", "mahesh@gmail.com"));
-            MemberStore.Add(new Member("ME123", "Jayani", "jayani@gmail.com"));
-            MemberStore.Add(new Member("ME124", "Sameera", "sameera@gmail.com"));
-            MemberStore.Add(new Member("ME125", "Dilshan", "dilshan@gmail.com"));
-            MemberStore.Add(new Member("ME126", "Nadeeka", "nadeeka@gmail.com"));
-            MemberStore.Add(new Member("ME127", "Hasitha", "hasitha@gmail.com"));
-            MemberStore.Add(new Member("ME128", "Anjali", "anjali@gmail.com"));
-            MemberStore.Add(new Member("ME129", "Buddhika", "buddhika@gmail.com"));
-            MemberStore.Add(new Member("ME130", "Chathurika", "chathurika@gmail.com"));
+            MemberStore.Add(new Member("ME101", "Nimal", "nimal@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME102", "Sunil", "sunil@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME103", "Amara", "amara@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME104", "Kamal", "kamal@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME105", "Saman", "saman@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME106", "Nimali", "nimali@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME107", "Ruwan", "ruwan@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME108", "Chandana", "chandana@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME109", "Indika", "indika@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME110", "Sanjeewa", "sanjeewa@gmail.com", RandomDate()));
 
-            MemberStore.Add(new Member("ME131", "Dulani", "dulani@gmail.com"));
-            MemberStore.Add(new Member("ME132", "Fazal", "fazal@gmail.com"));
-            MemberStore.Add(new Member("ME133", "Gayathri", "gayathri@gmail.com"));
-            MemberStore.Add(new Member("ME134", "Heshan", "heshan@gmail.com"));
-            MemberStore.Add(new Member("ME135", "Isuru", "isuru@gmail.com"));
-            MemberStore.Add(new Member("ME136", "Janaka", "janaka@gmail.com"));
-            MemberStore.Add(new Member("ME137", "Kavindu", "kavindu@gmail.com"));
-            MemberStore.Add(new Member("ME138", "Lasith", "lasith@gmail.com"));
-            MemberStore.Add(new Member("ME139", "Madhavi", "madhavi@gmail.com"));
-            MemberStore.Add(new Member("ME140", "Nirosha", "nirosha@gmail.com"));
+            MemberStore.Add(new Member("ME111", "Lalith", "lalith@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME112", "Dinesh", "dinesh@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME113", "Nuwan", "nuwan@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME114", "Tharindu", "tharindu@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME115", "Harsha", "harsha@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME116", "Gayan", "gayan@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME117", "Anura", "anura@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME118", "Sarath", "sarath@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME119", "Ranjith", "ranjith@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME120", "Kushan", "kushan@gmail.com", RandomDate()));
 
-            MemberStore.Add(new Member("ME141", "Oshini", "oshini@gmail.com"));
-            MemberStore.Add(new Member("ME142", "Pradeep", "pradeep@gmail.com"));
-            MemberStore.Add(new Member("ME143", "Rashmi", "rashmi@gmail.com"));
-            MemberStore.Add(new Member("ME144", "Shanika", "shanika@gmail.com"));
-            MemberStore.Add(new Member("ME145", "Taniya", "taniya@gmail.com"));
-            MemberStore.Add(new Member("ME146", "Udara", "udara@gmail.com"));
-            MemberStore.Add(new Member("ME147", "Vimukthi", "vimukthi@gmail.com"));
-            MemberStore.Add(new Member("ME148", "Waruna", "waruna@gmail.com"));
-            MemberStore.Add(new Member("ME149", "Yohan", "yohan@gmail.com"));
-            MemberStore.Add(new Member("ME150", "Zain", "zain@gmail.com"));
+            MemberStore.Add(new Member("ME121", "Prasanna", "prasanna@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME122", "Mahesh", "mahesh@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME123", "Jayani", "jayani@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME124", "Sameera", "sameera@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME125", "Dilshan", "dilshan@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME126", "Nadeeka", "nadeeka@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME127", "Hasitha", "hasitha@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME128", "Anjali", "anjali@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME129", "Buddhika", "buddhika@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME130", "Chathurika", "chathurika@gmail.com", RandomDate()));
 
-            MemberStore.Add(new Member("ME151", "Ashan", "ashan@gmail.com"));
-            MemberStore.Add(new Member("ME152", "Bhagya", "bhagya@gmail.com"));
-            MemberStore.Add(new Member("ME153", "Chamara", "chamara@gmail.com"));
-            MemberStore.Add(new Member("ME154", "Dilan", "dilan@gmail.com"));
-            MemberStore.Add(new Member("ME155", "Eranga", "eranga@gmail.com"));
-            MemberStore.Add(new Member("ME156", "Farzan", "farzan@gmail.com"));
-            MemberStore.Add(new Member("ME157", "Gehan", "gehan@gmail.com"));
-            MemberStore.Add(new Member("ME158", "Hiruni", "hiruni@gmail.com"));
-            MemberStore.Add(new Member("ME159", "Imalsha", "imalsha@gmail.com"));
-            MemberStore.Add(new Member("ME160", "Jeewantha", "jeewantha@gmail.com"));
+            MemberStore.Add(new Member("ME131", "Dulani", "dulani@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME132", "Fazal", "fazal@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME133", "Gayathri", "gayathri@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME134", "Heshan", "heshan@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME135", "Isuru", "isuru@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME136", "Janaka", "janaka@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME137", "Kavindu", "kavindu@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME138", "Lasith", "lasith@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME139", "Madhavi", "madhavi@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME140", "Nirosha", "nirosha@gmail.com", RandomDate()));
 
-            MemberStore.Add(new Member("ME161", "Kavishka", "kavishka@gmail.com"));
-            MemberStore.Add(new Member("ME162", "Lakshan", "lakshan@gmail.com"));
-            MemberStore.Add(new Member("ME163", "Madhushan", "madhushan@gmail.com"));
-            MemberStore.Add(new Member("ME164", "Nadun", "nadun@gmail.com"));
-            MemberStore.Add(new Member("ME165", "Pasan", "pasan@gmail.com"));
-            MemberStore.Add(new Member("ME166", "Ravindu", "ravindu@gmail.com"));
-            MemberStore.Add(new Member("ME167", "Sanduni", "sanduni@gmail.com"));
-            MemberStore.Add(new Member("ME168", "Thilini", "thilini@gmail.com"));
-            MemberStore.Add(new Member("ME169", "Udani", "udani@gmail.com"));
-            MemberStore.Add(new Member("ME170", "Vinuja", "vinuja@gmail.com"));
+            MemberStore.Add(new Member("ME141", "Oshini", "oshini@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME142", "Pradeep", "pradeep@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME143", "Rashmi", "rashmi@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME144", "Shanika", "shanika@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME145", "Taniya", "taniya@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME146", "Udara", "udara@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME147", "Vimukthi", "vimukthi@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME148", "Waruna", "waruna@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME149", "Yohan", "yohan@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME150", "Zain", "zain@gmail.com", RandomDate()));
 
-            MemberStore.Add(new Member("ME171", "Avishka", "avishka@gmail.com"));
-            MemberStore.Add(new Member("ME172", "Bimal", "bimal@gmail.com"));
-            MemberStore.Add(new Member("ME173", "Chathura", "chathura@gmail.com"));
-            MemberStore.Add(new Member("ME174", "Dimuthu", "dimuthu@gmail.com"));
-            MemberStore.Add(new Member("ME175", "Eshan", "eshan@gmail.com"));
-            MemberStore.Add(new Member("ME176", "Fahim", "fahim@gmail.com"));
-            MemberStore.Add(new Member("ME177", "Gehan", "gehan@gmail.com"));
-            MemberStore.Add(new Member("ME178", "Harini", "harini@gmail.com"));
-            MemberStore.Add(new Member("ME179", "Iresh", "iresh@gmail.com"));
-            MemberStore.Add(new Member("ME180", "Jeewan", "jeewan@gmail.com"));
+            MemberStore.Add(new Member("ME151", "Ashan", "ashan@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME152", "Bhagya", "bhagya@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME153", "Chamara", "chamara@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME154", "Dilan", "dilan@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME155", "Eranga", "eranga@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME156", "Farzan", "farzan@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME157", "Gehan", "gehan@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME158", "Hiruni", "hiruni@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME159", "Imalsha", "imalsha@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME160", "Jeewantha", "jeewantha@gmail.com", RandomDate()));
 
-            MemberStore.Add(new Member("ME181", "Kasuni", "kasuni@gmail.com"));
-            MemberStore.Add(new Member("ME182", "Lahiru", "lahiru@gmail.com"));
-            MemberStore.Add(new Member("ME183", "Malith", "malith@gmail.com"));
-            MemberStore.Add(new Member("ME184", "Nadeesh", "nadeesh@gmail.com"));
-            MemberStore.Add(new Member("ME185", "Pasindu", "pasindu@gmail.com"));
-            MemberStore.Add(new Member("ME186", "Rangana", "rangana@gmail.com"));
-            MemberStore.Add(new Member("ME187", "Sithum", "sithum@gmail.com"));
-            MemberStore.Add(new Member("ME188", "Tharanga", "tharanga@gmail.com"));
-            MemberStore.Add(new Member("ME189", "Uditha", "uditha@gmail.com"));
-            MemberStore.Add(new Member("ME190", "Vikum", "vikum@gmail.com"));
+            MemberStore.Add(new Member("ME161", "Kavishka", "kavishka@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME162", "Lakshan", "lakshan@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME163", "Madhushan", "madhushan@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME164", "Nadun", "nadun@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME165", "Pasan", "pasan@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME166", "Ravindu", "ravindu@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME167", "Sanduni", "sanduni@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME168", "Thilini", "thilini@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME169", "Udani", "udani@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME170", "Vinuja", "vinuja@gmail.com", RandomDate()));
 
-            MemberStore.Add(new Member("ME191", "Akila", "akila@gmail.com"));
-            MemberStore.Add(new Member("ME192", "Buwaneka", "buwaneka@gmail.com"));
-            MemberStore.Add(new Member("ME193", "Chathuranga", "chathuranga@gmail.com"));
-            MemberStore.Add(new Member("ME194", "Dilusha", "dilusha@gmail.com"));
-            MemberStore.Add(new Member("ME195", "Eshan", "eshan@gmail.com"));
-            MemberStore.Add(new Member("ME196", "Fathima", "fathima@gmail.com"));
-            MemberStore.Add(new Member("ME197", "Gayani", "gayani@gmail.com"));
-            MemberStore.Add(new Member("ME198", "Hansini", "hansini@gmail.com"));
-            MemberStore.Add(new Member("ME199", "Ishara", "ishara@gmail.com"));
-            MemberStore.Add(new Member("ME200", "Janith", "janith@gmail.com"));
+            MemberStore.Add(new Member("ME171", "Avishka", "avishka@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME172", "Bimal", "bimal@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME173", "Chathura", "chathura@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME174", "Dimuthu", "dimuthu@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME175", "Eshan", "eshan@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME176", "Fahim", "fahim@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME177", "Gehan", "gehan@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME178", "Harini", "harini@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME179", "Iresh", "iresh@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME180", "Jeewan", "jeewan@gmail.com", RandomDate()));
+
+            MemberStore.Add(new Member("ME181", "Kasuni", "kasuni@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME182", "Lahiru", "lahiru@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME183", "Malith", "malith@gmail.com", RandomDate()));
+            MemberStore.Add(new Member("ME184", "Nadeesh", "nadeesh@gmail.com", RandomDate()));
+          
+
+        }
+
+        public static void InitializeWaiters()
+        {
+            WaiterList.EnQueue(new BookWaiter("ME7890","Fluid Mechanics",DateTime.Now.AddDays(-5)));
+            WaiterList.EnQueue(new BookWaiter("ME2021", "Data Structures and Algorithms", DateTime.Now.AddDays(-4)));
+            WaiterList.EnQueue(new BookWaiter("ME3050", "Circuit Analysis", DateTime.Now.AddDays(-3)));
+            WaiterList.EnQueue(new BookWaiter("ME4100", "Business Analytics", DateTime.Now.AddDays(-2)));
+            WaiterList.EnQueue(new BookWaiter("ME5100", "Environmental Engineering", DateTime.Now.AddDays(-1)));
 
         }
     }
